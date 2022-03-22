@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - master
+  pull_request:
+    branches:
+      - master
       
 jobs:
 
@@ -45,9 +48,8 @@ jobs:
     - name: Build Sybil project
       run: dotnet build Sybil -c $env:Configuration
 
-    - name: Push nuget package
-      uses: brandedoutcast/publish-nuget@v2.5.5
-      with:
-         PROJECT_FILE_PATH: Sybil\Sybil.csproj
-         NUGET_KEY: ${{secrets.NUGET_API_KEY}}
-    
+    - name: Package
+      run: dotnet pack -c Release -o . $env:Source_Project_Path
+
+    - name: Publish
+      run: dotnet nuget push *.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
