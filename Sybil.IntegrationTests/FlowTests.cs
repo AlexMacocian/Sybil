@@ -6,7 +6,7 @@ namespace Sybil.IntegrationTests
     [TestClass]
     public sealed class FlowTests
     {
-        private const string ExpectedNamespace =
+        private const string ExpectedNamespace = 
 @"namespace TestNamespace
 {
     using System;

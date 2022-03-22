@@ -83,15 +83,15 @@ namespace Sybil
         {
             if (this.BlockBody is null is false)
             {
-                return this.MethodDeclarationSyntax.WithBody(this.BlockBody);
+                return this.MethodDeclarationSyntax.WithBody(this.BlockBody).NormalizeWhitespace();
             }
 
             if (this.ArrowExpression is null is false)
             {
-                return this.MethodDeclarationSyntax.WithExpressionBody(this.ArrowExpression);
+                return this.MethodDeclarationSyntax.WithExpressionBody(this.ArrowExpression).NormalizeWhitespace();
             }
 
-            return this.MethodDeclarationSyntax;
+            return this.MethodDeclarationSyntax.NormalizeWhitespace();
         }
     }
 }
