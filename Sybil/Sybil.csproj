@@ -6,16 +6,21 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/AlexMacocian/Sybil</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Version>0.1</Version>
+    <Version>0.1.1</Version>
+    <Description>CSharp Syntax builders for generating CSharp nodes such as classes, methods, properties, etc.</Description>
+    <PackageProjectUrl>https://github.com/AlexMacocian/Sybil</PackageProjectUrl>
+    <AssemblyVersion>0.1.1</AssemblyVersion>
+    <FileVersion>0.1.1</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="..\LICENSE" Link="LICENSE">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Include="..\README.md">
+    <None Include="..\LICENSE">
       <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\README.md" Link="README.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
     </None>
   </ItemGroup>
 
