@@ -31,6 +31,8 @@ namespace Sybil
 
         public NamespaceBuilder WithClass(ClassBuilder classBuilder)
         {
+            _ = classBuilder ?? throw new ArgumentNullException(nameof(classBuilder));
+
             this.classBuilders.Add(classBuilder);
 
             return this;
@@ -41,11 +43,6 @@ namespace Sybil
             return this.NamespaceDeclaration
                 .AddMembers(this.classBuilders.Select(c => c.Build()).ToArray())
                 .NormalizeWhitespace();
-        }
-
-        public static NamespaceBuilder Create(string @namespace)
-        {
-            return new NamespaceBuilder(@namespace);
         }
     }
 }

@@ -41,6 +41,8 @@ namespace Sybil
         }
         public PropertyBuilder WithAccessor(AccessorBuilder accessorBuilder)
         {
+            _ = accessorBuilder ?? throw new ArgumentNullException(nameof(accessorBuilder));
+
             this.accessors.Add(accessorBuilder);
 
             return this;

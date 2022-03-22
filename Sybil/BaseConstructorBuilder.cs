@@ -25,7 +25,7 @@ namespace Sybil
 
         public ConstructorInitializerSyntax Build()
         {
-            return ConstructorInitializerSyntax.NormalizeWhitespace();
+            return this.ConstructorInitializerSyntax.NormalizeWhitespace();
         }
     }
 }

@@ -9,7 +9,6 @@ namespace Sybil
 {
     public sealed class ClassBuilder : IBuilder<ClassDeclarationSyntax>
     {
-        private readonly string className;
         private ClassDeclarationSyntax ClassDeclaration { get; set; }
 
         private readonly List<ConstructorBuilder> Constructors = new List<ConstructorBuilder>();
@@ -22,7 +21,6 @@ namespace Sybil
         {
             _ = string.IsNullOrWhiteSpace(className) ? throw new ArgumentNullException(nameof(className)) : className;
 
-            this.className = className;
             this.ClassDeclaration = SyntaxFactory.ClassDeclaration(className);
         }
 

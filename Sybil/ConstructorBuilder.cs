@@ -23,6 +23,8 @@ namespace Sybil
 
         public ConstructorBuilder WithBase(BaseConstructorBuilder baseConstructorBuilder)
         {
+            _ = baseConstructorBuilder ?? throw new ArgumentNullException(nameof(baseConstructorBuilder));
+
             this.baseConstructorBuilder = baseConstructorBuilder;
             return this;
         }
