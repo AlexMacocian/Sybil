@@ -7,7 +7,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sybil", "Sybil\Sybil.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sybil.UnitTests", "Sybil.UnitTests\Sybil.UnitTests.csproj", "{458625E9-7427-47C6-BEE9-6269BDA00282}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sybil.IntegrationTests", "Sybil.IntegrationTests\Sybil.IntegrationTests.csproj", "{4BE3F7BF-602C-447E-B29B-011AE7274E4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sybil.IntegrationTests", "Sybil.IntegrationTests\Sybil.IntegrationTests.csproj", "{4BE3F7BF-602C-447E-B29B-011AE7274E4A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{5BF4022B-FF97-42AC-9CE7-B8D1913BD0F8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{6028DE5F-4CA6-45C4-962F-F8C5B0BAE30D}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\cd.yaml = .github\workflows\cd.yaml
+		.github\workflows\ci.yaml = .github\workflows\ci.yaml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,6 +38,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6028DE5F-4CA6-45C4-962F-F8C5B0BAE30D} = {5BF4022B-FF97-42AC-9CE7-B8D1913BD0F8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B97F59F1-BA0C-403C-9797-9BF8E107AEE7}

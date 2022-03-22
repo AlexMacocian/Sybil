@@ -1,0 +1,53 @@
+name:  Sybil CD Pipeline
+
+on:
+  push:
+    branches:
+      - master
+      
+jobs:
+
+  build:
+    environment: Default
+    strategy:
+      matrix:
+        targetplatform: [x64]
+
+    runs-on: windows-latest
+
+    env:
+      Configuration: Release
+      Solution_Path: Sybil.sln
+      UnitTest_Project_Path: Sybil.UnitTests\Sybil.UnitTests.csproj
+      IntegrationTest_Project_Path: Sybil.IntegrationTests\Sybil.IntegrationTests.csproj
+      Source_Project_Path: Sybil\Sybil.csproj
+      Actions_Allow_Unsecure_Commands: true
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v1.0.1
+
+    - name: Restore project
+      run: msbuild $env:Solution_Path /t:Restore /p:Configuration=$env:Configuration /p:RuntimeIdentifier=$env:RuntimeIdentifier
+      env:
+        RuntimeIdentifier: win-${{ matrix.targetplatform }}
+
+    - name: Build Sybil project
+      run: dotnet build Sybil -c $env:Configuration
+
+    - name: Push nuget package
+      uses: brandedoutcast/publish-nuget@v2.5.5
+      with:
+         PROJECT_FILE_PATH: Sybil\Sybil.csproj
+         NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+    
