@@ -9,12 +9,17 @@ namespace Sybil.Tests
     public class ClassBuilderTests
     {
         private const string Name = "Test";
+        private const string Base = "Base";
         private const string PublicClass =
 @"public class Test
 {
 }";
         private const string PublicStaticClass =
 @"public static class Test
+{
+}";
+        private const string ClassWithBase =
+@"class Test : Base
 {
 }";
 
@@ -119,6 +124,25 @@ namespace Sybil.Tests
         }
 
         [TestMethod]
+        public void WithBaseClass_NullBaseClass_ThrowsArgumentNullException()
+        {
+            var action = () =>
+            {
+                this.builder.WithBaseClass(null);
+            };
+
+            action.Should().Throw<ArgumentNullException>();
+        }
+
+        [TestMethod]
+        public void WithBaseClass_BaseClassValid_ReturnsBuilder()
+        {
+            var returnedBuilder = this.builder.WithBaseClass(Base);
+
+            returnedBuilder.Should().NotBeNull().And.Subject.Should().BeOfType<ClassBuilder>();
+        }
+
+        [TestMethod]
         public void Build_ReturnsClassDeclarationSyntax()
         {
             var syntax = this.builder.Build();
@@ -140,6 +164,17 @@ namespace Sybil.Tests
             var result = this.builder.WithModifiers("public static").Build().ToFullString();
 
             result.Should().Be(PublicStaticClass);
+        }
+
+        [TestMethod]
+        public void WithBaseClass_ReturnsExpectedString()
+        {
+            var result = this.builder
+                .WithBaseClass(Base)
+                .Build()
+                .ToFullString();
+
+            result.Should().Be(ClassWithBase);
         }
     }
 }

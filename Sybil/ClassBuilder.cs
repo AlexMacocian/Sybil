@@ -24,6 +24,16 @@ namespace Sybil
             this.ClassDeclaration = SyntaxFactory.ClassDeclaration(className);
         }
 
+        public ClassBuilder WithBaseClass(string baseClass)
+        {
+            _ = string.IsNullOrWhiteSpace(baseClass) ? throw new ArgumentNullException(nameof(baseClass)) : baseClass;
+
+            this.ClassDeclaration = this.ClassDeclaration.AddBaseListTypes(
+                SyntaxFactory.SimpleBaseType(SyntaxFactory.ParseTypeName(baseClass)));
+
+            return this;
+        }
+
         public ClassBuilder WithModifier(string modifier)
         {
             _ = string.IsNullOrWhiteSpace(modifier) ? throw new ArgumentNullException(nameof(modifier)) : modifier;
