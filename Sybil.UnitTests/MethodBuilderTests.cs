@@ -20,6 +20,7 @@ namespace Sybil.Tests
         private const string PublicEmptyMethod = "public string Test() => throw new NotImplementedException() ;";
         private const string PublicSealedEmptyMethod = "public sealed string Test() => throw new NotImplementedException() ;";
         private const string EmptyMethodWithParameter = "string Test(string someString) => throw new NotImplementedException() ;";
+        private const string EmptyMethodWithThisParameter = "string Test(this string someString) => throw new NotImplementedException() ;";
         private const string EmptyMethodWithParameterWithDefault = "string Test(string someString = null) => throw new NotImplementedException() ;";
         private const string MethodWithArrowExpression = "string Test() => this.someString ;";
         private const string PublicSealedMethodWithParameterAndExpression = "public sealed string Test(string someString = null) => this.someString ;";
@@ -132,6 +133,36 @@ namespace Sybil.Tests
         }
 
         [TestMethod]
+        public void WithThisParameter_ParameterNameNull_ThrowsArgumentNullException()
+        {
+            var action = () =>
+            {
+                this.builder.WithThisParameter(ParameterType, null);
+            };
+
+            action.Should().Throw<ArgumentNullException>();
+        }
+
+        [TestMethod]
+        public void WithThisParameter_ParameterTypeNull_ThrowsArgumentNullException()
+        {
+            var action = () =>
+            {
+                this.builder.WithThisParameter(null, ParameterName);
+            };
+
+            action.Should().Throw<ArgumentNullException>();
+        }
+
+        [TestMethod]
+        public void WithThisParameter_ParameterValid_ReturnsBuilder()
+        {
+            var returnedBuilder = this.builder.WithThisParameter(ParameterType, ParameterName);
+
+            returnedBuilder.Should().NotBeNull().And.Subject.Should().Be(this.builder);
+        }
+
+        [TestMethod]
         public void WithBody_BodyNull_ThrowsArgumentNullException()
         {
             var action = () =>
@@ -207,6 +238,14 @@ namespace Sybil.Tests
             var result = this.builder.WithParameter(ParameterType, ParameterName, Null).Build().ToFullString();
 
             result.Should().Be(EmptyMethodWithParameterWithDefault);
+        }
+
+        [TestMethod]
+        public void WithThisParameter_ReturnsExpectedString()
+        {
+            var result = this.builder.WithThisParameter(ParameterType, ParameterName).Build().ToFullString();
+
+            result.Should().Be(EmptyMethodWithThisParameter);
         }
 
         [TestMethod]

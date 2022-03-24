@@ -53,10 +53,26 @@ namespace Sybil
 
             var parameter = SyntaxFactory.Parameter(
                 SyntaxFactory.List<AttributeListSyntax>(),
-                new SyntaxTokenList(),
+                SyntaxFactory.TokenList(),
                 type: SyntaxFactory.ParseTypeName(parameterType),
                 identifier: SyntaxFactory.ParseToken(parameterName),
                 @default: equalsValueClauseSyntax);
+
+            this.MethodDeclarationSyntax = this.MethodDeclarationSyntax.AddParameterListParameters(parameter);
+
+            return this;
+        }
+        public MethodBuilder WithThisParameter(string parameterType, string parameterName)
+        {
+            _ = string.IsNullOrWhiteSpace(parameterName) ? throw new ArgumentNullException(nameof(parameterName)) : parameterName;
+            _ = string.IsNullOrWhiteSpace(parameterType) ? throw new ArgumentNullException(nameof(parameterType)) : parameterType;
+
+            var parameter = SyntaxFactory.Parameter(
+                SyntaxFactory.List<AttributeListSyntax>(),
+                SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.ThisKeyword)),
+                type: SyntaxFactory.ParseTypeName(parameterType),
+                identifier: SyntaxFactory.ParseToken(parameterName),
+                @default: null);
 
             this.MethodDeclarationSyntax = this.MethodDeclarationSyntax.AddParameterListParameters(parameter);
 
