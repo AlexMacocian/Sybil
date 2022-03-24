@@ -11,7 +11,7 @@ namespace Sybil.IntegrationTests
 {
     using System;
 
-    public sealed class TestClass
+    public sealed class TestClass : BaseTestClass
     {
         TestClass(string fieldString) : base(fieldString)
         {
@@ -35,6 +35,7 @@ namespace Sybil.IntegrationTests
                 .WithUsing("System")
                 .WithClass(
                     SyntaxBuilder.CreateClass("TestClass")
+                    .WithBaseClass("BaseTestClass")
                     .WithModifiers("public sealed")
                     .WithConstructor(
                         SyntaxBuilder.CreateConstructor("TestClass")
