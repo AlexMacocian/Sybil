@@ -101,13 +101,8 @@ namespace Sybil
             {
                 return this.MethodDeclarationSyntax.WithBody(this.BlockBody).NormalizeWhitespace();
             }
-
-            if (this.ArrowExpression is null is false)
-            {
-                return this.MethodDeclarationSyntax.WithExpressionBody(this.ArrowExpression).NormalizeWhitespace();
-            }
-
-            return this.MethodDeclarationSyntax.NormalizeWhitespace();
+            
+            return this.MethodDeclarationSyntax.WithExpressionBody(this.ArrowExpression).NormalizeWhitespace();
         }
     }
 }
