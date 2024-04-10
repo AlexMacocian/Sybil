@@ -43,7 +43,7 @@ jobs:
       run: dotnet test $env:UnitTest_Project_Path
 
     - name: Execute Integration Tests
-      run: dotnet test $env:UnitTest_Project_Path
+      run: dotnet test $env:IntegrationTest_Project_Path
 
     - name: Restore Project
       run: msbuild $env:Solution_Path /t:Restore /p:Configuration=$env:Configuration /p:RuntimeIdentifier=$env:RuntimeIdentifier
