@@ -9,6 +9,7 @@ namespace Sybil
 {
     public sealed class PropertyBuilder : IBuilder<PropertyDeclarationSyntax>
     {
+        private readonly List<AttributeBuilder> attributes = new List<AttributeBuilder>();
         private readonly List<AccessorBuilder> accessors = new List<AccessorBuilder>();
 
         private PropertyDeclarationSyntax PropertyDeclarationSyntax { get; set; }
@@ -31,6 +32,7 @@ namespace Sybil
 
             return this;
         }
+
         public PropertyBuilder WithModifiers(string modifiers)
         {
             _ = string.IsNullOrWhiteSpace(modifiers) ? throw new ArgumentNullException(nameof(modifiers)) : modifiers;
@@ -39,6 +41,7 @@ namespace Sybil
 
             return this;
         }
+
         public PropertyBuilder WithAccessor(AccessorBuilder accessorBuilder)
         {
             _ = accessorBuilder ?? throw new ArgumentNullException(nameof(accessorBuilder));
@@ -48,9 +51,19 @@ namespace Sybil
             return this;
         }
 
+        public PropertyBuilder WithAttribute(AttributeBuilder attributeBuilder)
+        {
+            this.attributes.Add(attributeBuilder ?? throw new ArgumentNullException(nameof(attributeBuilder)));
+
+            return this;
+        }
+
         public PropertyDeclarationSyntax Build()
         {
-            return this.PropertyDeclarationSyntax.WithAccessorList(this.BuildAccessorList()).NormalizeWhitespace();
+            return this.PropertyDeclarationSyntax
+                .WithAccessorList(this.BuildAccessorList())
+                .AddAttributeLists(SyntaxFactory.AttributeList(SyntaxFactory.SeparatedList(this.attributes.Select(p => p.Build()).ToArray())))
+                .NormalizeWhitespace();
         }
 
         private AccessorListSyntax BuildAccessorList()

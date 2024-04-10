@@ -3,65 +3,64 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace Sybil.Tests
+namespace Sybil.Tests;
+
+[TestClass]
+public class BaseConstructorBuilderTests
 {
-    [TestClass]
-    public class BaseConstructorBuilderTests
+    private const string EmptyBase = ": base()";
+    private const string TestBase = ": base(test)";
+
+    private readonly BaseConstructorBuilder builder;
+
+    public BaseConstructorBuilderTests()
     {
-        private const string EmptyBase = ": base()";
-        private const string TestBase = ": base(test)";
+        this.builder = new BaseConstructorBuilder();
+    }
 
-        private readonly BaseConstructorBuilder builder;
-
-        public BaseConstructorBuilderTests()
+    [TestMethod]
+    public void WithArgument_NullArgument_ThrowsArgumentNullException()
+    {
+        var action = () =>
         {
-            this.builder = new BaseConstructorBuilder();
-        }
+            this.builder.WithArgument(null);
+        };
 
-        [TestMethod]
-        public void WithArgument_NullArgument_ThrowsArgumentNullException()
-        {
-            var action = () =>
-            {
-                this.builder.WithArgument(null);
-            };
+        action.Should().Throw<ArgumentNullException>();
+    }
 
-            action.Should().Throw<ArgumentNullException>();
-        }
+    [TestMethod]
+    public void WithArgument_ValidArgument_ReturnsBuilder()
+    {
+        var returnedBuilder = this.builder.WithArgument("test");
 
-        [TestMethod]
-        public void WithArgument_ValidArgument_ReturnsBuilder()
-        {
-            var returnedBuilder = this.builder.WithArgument("test");
+        returnedBuilder.Should().NotBeNull().And.Subject.Should().Be(this.builder);
+    }
 
-            returnedBuilder.Should().NotBeNull().And.Subject.Should().Be(this.builder);
-        }
+    [TestMethod]
+    public void Build_ReturnsConstructorInitializerSyntax()
+    {
+        var syntax = this.builder.Build();
 
-        [TestMethod]
-        public void Build_ReturnsConstructorInitializerSyntax()
-        {
-            var syntax = this.builder.Build();
+        syntax.Should().NotBeNull().And.Subject.Should().BeOfType<ConstructorInitializerSyntax>();
+    }
 
-            syntax.Should().NotBeNull().And.Subject.Should().BeOfType<ConstructorInitializerSyntax>();
-        }
+    [TestMethod]
+    public void EmptyBaseConstructor_ReturnsExpectedString()
+    {
+        var result = this.builder.Build().ToFullString();
 
-        [TestMethod]
-        public void EmptyBaseConstructor_ReturnsExpectedString()
-        {
-            var result = this.builder.Build().ToFullString();
+        result.Should().Be(EmptyBase);
+    }
 
-            result.Should().Be(EmptyBase);
-        }
+    [TestMethod]
+    public void WithArgument_ShouldReturnExpectedString()
+    {
+        var result = this.builder
+            .WithArgument("test")
+            .Build()
+            .ToFullString();
 
-        [TestMethod]
-        public void WithArgument_ShouldReturnExpectedString()
-        {
-            var result = this.builder
-                .WithArgument("test")
-                .Build()
-                .ToFullString();
-
-            result.Should().Be(TestBase);
-        }
+        result.Should().Be(TestBase);
     }
 }

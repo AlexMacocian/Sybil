@@ -2,12 +2,14 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Sybil
 {
     public sealed class FieldBuilder : IBuilder<FieldDeclarationSyntax>
     {
+        private readonly List<AttributeBuilder> attributeBuilders = new List<AttributeBuilder>();
         private FieldDeclarationSyntax FieldDeclarationSyntax { get; set; }
 
         internal FieldBuilder(
@@ -31,6 +33,7 @@ namespace Sybil
 
             return this;
         }
+
         public FieldBuilder WithModifiers(string modifiers)
         {
             _ = string.IsNullOrWhiteSpace(modifiers) ? throw new ArgumentNullException(nameof(modifiers)) : modifiers;
@@ -40,9 +43,18 @@ namespace Sybil
             return this;
         }
 
+        public FieldBuilder WithAttribute(AttributeBuilder attributeBuilder)
+        {
+            this.attributeBuilders.Add(attributeBuilder ?? throw new ArgumentNullException(nameof(attributeBuilder)));
+
+            return this;
+        }
+
         public FieldDeclarationSyntax Build()
         {
-            return this.FieldDeclarationSyntax.NormalizeWhitespace();
+            return this.FieldDeclarationSyntax
+                .AddAttributeLists(SyntaxFactory.AttributeList(SyntaxFactory.SeparatedList(this.attributeBuilders.Select(p => p.Build()).ToArray())))
+                .NormalizeWhitespace();
         }
     }
 }

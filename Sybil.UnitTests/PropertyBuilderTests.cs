@@ -3,118 +3,117 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace Sybil.Tests
+namespace Sybil.Tests;
+
+[TestClass]
+public class PropertyBuilderTests
 {
-    [TestClass]
-    public class PropertyBuilderTests
+    private const string Public = "public";
+    private const string PublicStatic = "public static";
+    private const string TypeName = "string";
+    private const string PropertyName = "SomeString";
+    private const string PublicProperty = "public string SomeString { }";
+    private const string PublicStaticProperty = "public static string SomeString { }";
+
+    private readonly PropertyBuilder builder;
+
+    public PropertyBuilderTests()
     {
-        private const string Public = "public";
-        private const string PublicStatic = "public static";
-        private const string TypeName = "string";
-        private const string PropertyName = "SomeString";
-        private const string PublicProperty = "public string SomeString { }";
-        private const string PublicStaticProperty = "public static string SomeString { }";
+        this.builder = new PropertyBuilder(TypeName, PropertyName);
+    }
 
-        private readonly PropertyBuilder builder;
-
-        public PropertyBuilderTests()
+    [TestMethod]
+    public void Constructor_NullPropertyType_ThrowsArgumentNullException()
+    {
+        var action = () =>
         {
-            this.builder = new PropertyBuilder(TypeName, PropertyName);
-        }
+            _ = new PropertyBuilder(null, PropertyName);
+        };
 
-        [TestMethod]
-        public void Constructor_NullPropertyType_ThrowsArgumentNullException()
+        action.Should().Throw<ArgumentNullException>();
+    }
+
+    [TestMethod]
+    public void Constructor_NullPropertyName_ThrowsArgumentNullException()
+    {
+        var action = () =>
         {
-            var action = () =>
-            {
-                _ = new PropertyBuilder(null, PropertyName);
-            };
+            _ = new PropertyBuilder(TypeName, null);
+        };
 
-            action.Should().Throw<ArgumentNullException>();
-        }
+        action.Should().Throw<ArgumentNullException>();
+    }
 
-        [TestMethod]
-        public void Constructor_NullPropertyName_ThrowsArgumentNullException()
+    [TestMethod]
+    public void WithModifier_ModifierNull_ThrowsArgumentNullException()
+    {
+        var action = () =>
         {
-            var action = () =>
-            {
-                _ = new PropertyBuilder(TypeName, null);
-            };
+            this.builder.WithModifier(null);
+        };
 
-            action.Should().Throw<ArgumentNullException>();
-        }
+        action.Should().Throw<ArgumentNullException>();
+    }
 
-        [TestMethod]
-        public void WithModifier_ModifierNull_ThrowsArgumentNullException()
+    [TestMethod]
+    public void WithModifier_ModifierValid_ReturnsBuilder()
+    {
+        var returnedBuilder = this.builder.WithModifier(Public);
+
+        returnedBuilder.Should().NotBeNull().And.Subject.Should().Be(this.builder);
+    }
+
+    [TestMethod]
+    public void WithModifiers_ModifiersNull_ThrowsArgumentNullException()
+    {
+        var action = () =>
         {
-            var action = () =>
-            {
-                this.builder.WithModifier(null);
-            };
+            this.builder.WithModifiers(null);
+        };
 
-            action.Should().Throw<ArgumentNullException>();
-        }
+        action.Should().Throw<ArgumentNullException>();
+    }
 
-        [TestMethod]
-        public void WithModifier_ModifierValid_ReturnsBuilder()
+    [TestMethod]
+    public void WithModifiers_ModifiersValid_ReturnsBuilder()
+    {
+        var returnedBuilder = this.builder.WithModifiers(PublicStatic);
+
+        returnedBuilder.Should().NotBeNull().And.Subject.Should().Be(this.builder);
+    }
+
+    [TestMethod]
+    public void WithAccessor_NullAccessor_ThrowsArgumentNullException()
+    {
+        var action = () =>
         {
-            var returnedBuilder = this.builder.WithModifier(Public);
+            this.builder.WithAccessor(null);
+        };
 
-            returnedBuilder.Should().NotBeNull().And.Subject.Should().Be(this.builder);
-        }
+        action.Should().Throw<ArgumentNullException>();
+    }
 
-        [TestMethod]
-        public void WithModifiers_ModifiersNull_ThrowsArgumentNullException()
-        {
-            var action = () =>
-            {
-                this.builder.WithModifiers(null);
-            };
+    [TestMethod]
+    public void Build_ReturnsPropertyDeclarationSyntax()
+    {
+        var syntax = this.builder.Build();
 
-            action.Should().Throw<ArgumentNullException>();
-        }
+        syntax.Should().NotBeNull().And.Subject.Should().BeOfType<PropertyDeclarationSyntax>();
+    }
 
-        [TestMethod]
-        public void WithModifiers_ModifiersValid_ReturnsBuilder()
-        {
-            var returnedBuilder = this.builder.WithModifiers(PublicStatic);
+    [TestMethod]
+    public void WithModifier_ReturnsExpectedString()
+    {
+        var result = this.builder.WithModifier(Public).Build().ToFullString();
 
-            returnedBuilder.Should().NotBeNull().And.Subject.Should().Be(this.builder);
-        }
+        result.Should().Be(PublicProperty);
+    }
 
-        [TestMethod]
-        public void WithAccessor_NullAccessor_ThrowsArgumentNullException()
-        {
-            var action = () =>
-            {
-                this.builder.WithAccessor(null);
-            };
+    [TestMethod]
+    public void WithModifiers_ReturnsExpectedString()
+    {
+        var result = this.builder.WithModifiers(PublicStatic).Build().ToFullString();
 
-            action.Should().Throw<ArgumentNullException>();
-        }
-
-        [TestMethod]
-        public void Build_ReturnsPropertyDeclarationSyntax()
-        {
-            var syntax = this.builder.Build();
-
-            syntax.Should().NotBeNull().And.Subject.Should().BeOfType<PropertyDeclarationSyntax>();
-        }
-
-        [TestMethod]
-        public void WithModifier_ReturnsExpectedString()
-        {
-            var result = this.builder.WithModifier(Public).Build().ToFullString();
-
-            result.Should().Be(PublicProperty);
-        }
-
-        [TestMethod]
-        public void WithModifiers_ReturnsExpectedString()
-        {
-            var result = this.builder.WithModifiers(PublicStatic).Build().ToFullString();
-
-            result.Should().Be(PublicStaticProperty);
-        }
+        result.Should().Be(PublicStaticProperty);
     }
 }

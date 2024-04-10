@@ -2,12 +2,15 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Sybil
 {
     public sealed class ConstructorBuilder : IBuilder<ConstructorDeclarationSyntax>
     {
+        private readonly List<AttributeBuilder> attributes = new List<AttributeBuilder>();
+
         private BaseConstructorBuilder baseConstructorBuilder;
 
         private ConstructorDeclarationSyntax ConstructorDeclarationSyntax { get; set; }
@@ -28,6 +31,7 @@ namespace Sybil
             this.baseConstructorBuilder = baseConstructorBuilder;
             return this;
         }
+
         public ConstructorBuilder WithModifiers(string modifiers)
         {
             _ = string.IsNullOrWhiteSpace(modifiers) ? throw new ArgumentNullException(nameof(modifiers)) : modifiers;
@@ -36,6 +40,7 @@ namespace Sybil
 
             return this;
         }
+
         public ConstructorBuilder WithModifier(string modifier)
         {
             _ = string.IsNullOrWhiteSpace(modifier) ? throw new ArgumentNullException(nameof(modifier)) : modifier;
@@ -44,6 +49,7 @@ namespace Sybil
 
             return this;
         }
+
         public ConstructorBuilder WithParameter(string parameterType, string parameterName, string defaultValue = null)
         {
             _ = string.IsNullOrWhiteSpace(parameterName) ? throw new ArgumentNullException(nameof(parameterName)) : parameterName;
@@ -66,12 +72,21 @@ namespace Sybil
 
             return this;
         }
+
         public ConstructorBuilder WithBody(string body)
         {
             _ = string.IsNullOrWhiteSpace(body) ? throw new ArgumentNullException(nameof(body)) : body;
 
             this.ConstructorDeclarationSyntax = this.ConstructorDeclarationSyntax.WithBody(SyntaxFactory.Block(SyntaxFactory.ParseStatement(body)));
 
+            return this;
+        }
+
+        public ConstructorBuilder WithAttribute(AttributeBuilder attributeBuilder)
+        {
+            _ = attributeBuilder ?? throw new ArgumentNullException(nameof(attributeBuilder));
+
+            this.attributes.Add(attributeBuilder);
             return this;
         }
 
@@ -82,7 +97,9 @@ namespace Sybil
                 this.ConstructorDeclarationSyntax = this.ConstructorDeclarationSyntax.WithInitializer(this.baseConstructorBuilder.Build());
             }
 
-            return this.ConstructorDeclarationSyntax.NormalizeWhitespace();
+            return this.ConstructorDeclarationSyntax
+                .AddAttributeLists(SyntaxFactory.AttributeList(SyntaxFactory.SeparatedList(this.attributes.Select(p => p.Build()).ToArray())))
+                .NormalizeWhitespace();
         }
     }
 }

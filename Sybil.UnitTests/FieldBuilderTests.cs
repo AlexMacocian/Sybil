@@ -3,107 +3,106 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace Sybil.Tests
+namespace Sybil.Tests;
+
+[TestClass]
+public class FieldBuilderTests
 {
-    [TestClass]
-    public class FieldBuilderTests
+    private const string Public = "public";
+    private const string PublicSealed = "public sealed";
+    private const string FieldName = "someString";
+    private const string FieldType = "string";
+    private const string PublicField = "public string someString;";
+    private const string PublicSealedField = "public sealed string someString;";
+
+    private readonly FieldBuilder builder;
+
+    public FieldBuilderTests()
     {
-        private const string Public = "public";
-        private const string PublicSealed = "public sealed";
-        private const string FieldName = "someString";
-        private const string FieldType = "string";
-        private const string PublicField = "public string someString;";
-        private const string PublicSealedField = "public sealed string someString;";
+        this.builder = new FieldBuilder(FieldType, FieldName);
+    }
 
-        private readonly FieldBuilder builder;
-
-        public FieldBuilderTests()
+    [TestMethod]
+    public void Constructor_NullFieldType_ThrowsArgumentNullException()
+    {
+        var action = () =>
         {
-            this.builder = new FieldBuilder(FieldType, FieldName);
-        }
+            _ = new FieldBuilder(null, FieldName);
+        };
 
-        [TestMethod]
-        public void Constructor_NullFieldType_ThrowsArgumentNullException()
+        action.Should().Throw<ArgumentNullException>();
+    }
+
+    [TestMethod]
+    public void Constructor_NullFieldName_ThrowsArgumentNullException()
+    {
+        var action = () =>
         {
-            var action = () =>
-            {
-                _ = new FieldBuilder(null, FieldName);
-            };
+            _ = new FieldBuilder(FieldType, null);
+        };
 
-            action.Should().Throw<ArgumentNullException>();
-        }
+        action.Should().Throw<ArgumentNullException>();
+    }
 
-        [TestMethod]
-        public void Constructor_NullFieldName_ThrowsArgumentNullException()
+    [TestMethod]
+    public void WithModifier_ModifierNull_ThrowsArgumentNullException()
+    {
+        var action = () =>
         {
-            var action = () =>
-            {
-                _ = new FieldBuilder(FieldType, null);
-            };
+            this.builder.WithModifier(null);
+        };
 
-            action.Should().Throw<ArgumentNullException>();
-        }
+        action.Should().Throw<ArgumentNullException>();
+    }
 
-        [TestMethod]
-        public void WithModifier_ModifierNull_ThrowsArgumentNullException()
+    [TestMethod]
+    public void WithModifier_ModifierValid_ReturnsBuilder()
+    {
+        var returnedBuilder = this.builder.WithModifier(Public);
+
+        returnedBuilder.Should().NotBeNull().And.Subject.Should().Be(this.builder);
+    }
+
+    [TestMethod]
+    public void WithModifiers_ModifiersNull_ThrowsArgumentNullException()
+    {
+        var action = () =>
         {
-            var action = () =>
-            {
-                this.builder.WithModifier(null);
-            };
+            this.builder.WithModifiers(null);
+        };
 
-            action.Should().Throw<ArgumentNullException>();
-        }
+        action.Should().Throw<ArgumentNullException>();
+    }
 
-        [TestMethod]
-        public void WithModifier_ModifierValid_ReturnsBuilder()
-        {
-            var returnedBuilder = this.builder.WithModifier(Public);
+    [TestMethod]
+    public void WithModifiers_ModifiersValid_ReturnsBuilder()
+    {
+        var returnedBuilder = this.builder.WithModifiers(PublicSealed);
 
-            returnedBuilder.Should().NotBeNull().And.Subject.Should().Be(this.builder);
-        }
+        returnedBuilder.Should().NotBeNull().And.Subject.Should().Be(this.builder);
+    }
 
-        [TestMethod]
-        public void WithModifiers_ModifiersNull_ThrowsArgumentNullException()
-        {
-            var action = () =>
-            {
-                this.builder.WithModifiers(null);
-            };
+    [TestMethod]
+    public void Build_ReturnsFieldDeclarationSyntax()
+    {
+        var syntax = this.builder.Build();
 
-            action.Should().Throw<ArgumentNullException>();
-        }
+        syntax.Should().NotBeNull().And.Subject.Should().BeOfType<FieldDeclarationSyntax>();
+    }
 
-        [TestMethod]
-        public void WithModifiers_ModifiersValid_ReturnsBuilder()
-        {
-            var returnedBuilder = this.builder.WithModifiers(PublicSealed);
+    [TestMethod]
+    public void WithModifier_ReturnsExpectedString()
+    {
+        var result = this.builder.WithModifier(Public).Build().ToFullString();
 
-            returnedBuilder.Should().NotBeNull().And.Subject.Should().Be(this.builder);
-        }
+        result.Should().Be(PublicField);
+    }
 
-        [TestMethod]
-        public void Build_ReturnsFieldDeclarationSyntax()
-        {
-            var syntax = this.builder.Build();
+    [TestMethod]
+    public void WithModifiers_ReturnsExpectedString()
+    {
+        var result = this.builder.WithModifiers(PublicSealed).Build().ToFullString();
 
-            syntax.Should().NotBeNull().And.Subject.Should().BeOfType<FieldDeclarationSyntax>();
-        }
-
-        [TestMethod]
-        public void WithModifier_ReturnsExpectedString()
-        {
-            var result = this.builder.WithModifier(Public).Build().ToFullString();
-
-            result.Should().Be(PublicField);
-        }
-
-        [TestMethod]
-        public void WithModifiers_ReturnsExpectedString()
-        {
-            var result = this.builder.WithModifiers(PublicSealed).Build().ToFullString();
-
-            result.Should().Be(PublicSealedField);
-        }
+        result.Should().Be(PublicSealedField);
     }
 }

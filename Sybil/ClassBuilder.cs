@@ -11,6 +11,7 @@ namespace Sybil
     {
         private ClassDeclarationSyntax ClassDeclaration { get; set; }
 
+        private readonly List<AttributeBuilder> Attributes = new List<AttributeBuilder>();
         private readonly List<ConstructorBuilder> Constructors = new List<ConstructorBuilder>();
         private readonly List<FieldBuilder> Fields = new List<FieldBuilder>();
         private readonly List<PropertyBuilder> Properties = new List<PropertyBuilder>();
@@ -80,9 +81,17 @@ namespace Sybil
             return this;
         }
 
+        public ClassBuilder WithAttribute(AttributeBuilder attributeBuilder)
+        {
+            this.Attributes.Add(attributeBuilder ?? throw new ArgumentNullException(nameof(attributeBuilder)));
+
+            return this;
+        }
+
         public ClassDeclarationSyntax Build()
         {
             return this.ClassDeclaration
+                .AddAttributeLists(SyntaxFactory.AttributeList(SyntaxFactory.SeparatedList(this.Attributes.Select(p => p.Build()).ToArray())))
                 .AddMembers(this.Constructors.Select(p => p.Build()).ToArray())
                 .AddMembers(this.Fields.Select(p => p.Build()).ToArray())
                 .AddMembers(this.Properties.Select(p => p.Build()).ToArray())
