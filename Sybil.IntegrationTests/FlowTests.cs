@@ -23,6 +23,7 @@ namespace TestNamespace
             this.PropertyString = string.Empty;
         }
 
+        private string someTypeString = $""{typeof(string)}"";
         [SomeAttribute2]
         private string fieldString;
         [SomeAttribute3(typeof(String))]
@@ -64,6 +65,10 @@ namespace TestNamespace
                         .WithNullArgument())
                     .WithParameter("string", "fieldString")
                     .WithBody("this.fieldString = fieldString ?? throw new ArgumentNullException();\rthis.PropertyString = string.Empty;"))
+                .WithField(
+                    SyntaxBuilder.CreateField("string", "someTypeString")
+                    .WithModifier("private")
+                    .WithInitializer("$\"{typeof(string)}\""))
                 .WithField(
                     SyntaxBuilder.CreateField("string", "fieldString")
                     .WithAttribute(SyntaxBuilder.CreateAttribute("SomeAttribute2"))

@@ -50,6 +50,23 @@ namespace Sybil
             return this;
         }
 
+        public FieldBuilder WithInitializer(string initializer)
+        {
+            if (string.IsNullOrWhiteSpace(initializer))
+            {
+                throw new ArgumentNullException(nameof(initializer));
+            }
+
+            var variableDeclaration = this.FieldDeclarationSyntax.Declaration.Variables[0];
+            variableDeclaration = variableDeclaration.WithInitializer(SyntaxFactory.EqualsValueClause(SyntaxFactory.ParseExpression(initializer)));
+            this.FieldDeclarationSyntax = this.FieldDeclarationSyntax
+                .WithDeclaration(
+                    this.FieldDeclarationSyntax.Declaration
+                        .WithVariables(SyntaxFactory.SeparatedList<VariableDeclaratorSyntax>(new SyntaxNodeOrToken[] { variableDeclaration })));
+
+            return this;
+        }
+
         public FieldDeclarationSyntax Build()
         {
             if (this.attributeBuilders.Count > 0)

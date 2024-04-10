@@ -14,6 +14,8 @@ public class FieldBuilderTests
     private const string FieldType = "string";
     private const string PublicField = "public string someString;";
     private const string PublicSealedField = "public sealed string someString;";
+    private const string PublicSealedWithInitializer = "public sealed string someString = someValue;";
+    private const string Initializer = "someValue";
 
     private readonly FieldBuilder builder;
 
@@ -104,5 +106,26 @@ public class FieldBuilderTests
         var result = this.builder.WithModifiers(PublicSealed).Build().ToFullString();
 
         result.Should().Be(PublicSealedField);
+    }
+
+    [TestMethod]
+    public void WithInitializer_NullInitializer_ThrowsArgumentNullException()
+    {
+        var action = () =>
+        {
+            this.builder.WithInitializer(null);
+        };
+
+        action.Should().Throw<ArgumentNullException>();
+    }
+
+    [TestMethod]
+    public void WithInitializer_ReturnsExpectedString()
+    {
+        var result = this.builder.WithModifiers(PublicSealed)
+            .WithInitializer(Initializer).Build().ToFullString();
+
+
+        result.Should().Be(PublicSealedWithInitializer);
     }
 }
