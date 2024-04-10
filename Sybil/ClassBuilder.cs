@@ -90,8 +90,12 @@ namespace Sybil
 
         public ClassDeclarationSyntax Build()
         {
+            if (this.Attributes.Count > 0)
+            {
+                this.ClassDeclaration = this.ClassDeclaration.AddAttributeLists(SyntaxFactory.AttributeList(SyntaxFactory.SeparatedList(this.Attributes.Select(p => p.Build()).ToArray())));
+            }
+
             return this.ClassDeclaration
-                .AddAttributeLists(SyntaxFactory.AttributeList(SyntaxFactory.SeparatedList(this.Attributes.Select(p => p.Build()).ToArray())))
                 .AddMembers(this.Constructors.Select(p => p.Build()).ToArray())
                 .AddMembers(this.Fields.Select(p => p.Build()).ToArray())
                 .AddMembers(this.Properties.Select(p => p.Build()).ToArray())

@@ -60,9 +60,13 @@ namespace Sybil
 
         public PropertyDeclarationSyntax Build()
         {
+            if (this.attributes.Count > 0)
+            {
+                this.PropertyDeclarationSyntax = this.PropertyDeclarationSyntax.AddAttributeLists(SyntaxFactory.AttributeList(SyntaxFactory.SeparatedList(this.attributes.Select(p => p.Build()).ToArray())));
+            }
+
             return this.PropertyDeclarationSyntax
                 .WithAccessorList(this.BuildAccessorList())
-                .AddAttributeLists(SyntaxFactory.AttributeList(SyntaxFactory.SeparatedList(this.attributes.Select(p => p.Build()).ToArray())))
                 .NormalizeWhitespace();
         }
 

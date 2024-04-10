@@ -52,8 +52,12 @@ namespace Sybil
 
         public FieldDeclarationSyntax Build()
         {
+            if (this.attributeBuilders.Count > 0)
+            {
+                this.FieldDeclarationSyntax = this.FieldDeclarationSyntax.AddAttributeLists(SyntaxFactory.AttributeList(SyntaxFactory.SeparatedList(this.attributeBuilders.Select(p => p.Build()).ToArray())));
+            }
+
             return this.FieldDeclarationSyntax
-                .AddAttributeLists(SyntaxFactory.AttributeList(SyntaxFactory.SeparatedList(this.attributeBuilders.Select(p => p.Build()).ToArray())))
                 .NormalizeWhitespace();
         }
     }

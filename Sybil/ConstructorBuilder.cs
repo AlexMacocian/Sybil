@@ -97,8 +97,12 @@ namespace Sybil
                 this.ConstructorDeclarationSyntax = this.ConstructorDeclarationSyntax.WithInitializer(this.baseConstructorBuilder.Build());
             }
 
+            if (this.attributes.Count > 0)
+            {
+                this.ConstructorDeclarationSyntax = this.ConstructorDeclarationSyntax.AddAttributeLists(SyntaxFactory.AttributeList(SyntaxFactory.SeparatedList(this.attributes.Select(p => p.Build()).ToArray())));
+            }
+
             return this.ConstructorDeclarationSyntax
-                .AddAttributeLists(SyntaxFactory.AttributeList(SyntaxFactory.SeparatedList(this.attributes.Select(p => p.Build()).ToArray())))
                 .NormalizeWhitespace();
         }
     }

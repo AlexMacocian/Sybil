@@ -112,16 +112,19 @@ namespace Sybil
 
         public MethodDeclarationSyntax Build()
         {
+            if (this.attributeBuilders.Count > 0)
+            {
+                this.MethodDeclarationSyntax = this.MethodDeclarationSyntax.AddAttributeLists(SyntaxFactory.AttributeList(SyntaxFactory.SeparatedList(this.attributeBuilders.Select(p => p.Build()).ToArray())));
+            }
+
             if (this.BlockBody is null is false)
             {
                 return this.MethodDeclarationSyntax
-                    .AddAttributeLists(SyntaxFactory.AttributeList(SyntaxFactory.SeparatedList(this.attributeBuilders.Select(p => p.Build()).ToArray())))
                     .WithBody(this.BlockBody)
                     .NormalizeWhitespace();
             }
             
             return this.MethodDeclarationSyntax
-                .AddAttributeLists(SyntaxFactory.AttributeList(SyntaxFactory.SeparatedList(this.attributeBuilders.Select(p => p.Build()).ToArray())))
                 .WithExpressionBody(this.ArrowExpression)
                 .NormalizeWhitespace();
         }

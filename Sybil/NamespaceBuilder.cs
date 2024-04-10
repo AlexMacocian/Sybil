@@ -9,6 +9,7 @@ namespace Sybil
 {
     public sealed class NamespaceBuilder : IBuilder<NamespaceDeclarationSyntax>
     {
+        private readonly List<AttributeBuilder> attributeBuilders = new List<AttributeBuilder>();
         private readonly List<ClassBuilder> classBuilders = new List<ClassBuilder>();
         private NamespaceDeclarationSyntax NamespaceDeclaration { get; set; }
 
@@ -38,8 +39,22 @@ namespace Sybil
             return this;
         }
 
+        public NamespaceBuilder WithAttribute(AttributeBuilder attributeBuilder)
+        {
+            _ = attributeBuilder ?? throw new ArgumentNullException(nameof(attributeBuilder));
+
+            this.attributeBuilders.Add(attributeBuilder);
+
+            return this;
+        }
+
         public NamespaceDeclarationSyntax Build()
         {
+            if (this.attributeBuilders.Count > 0)
+            {
+                this.NamespaceDeclaration = this.NamespaceDeclaration.AddAttributeLists(SyntaxFactory.AttributeList(SyntaxFactory.SeparatedList(this.attributeBuilders.Select(p => p.Build()).ToArray())));
+            }
+
             return this.NamespaceDeclaration
                 .AddMembers(this.classBuilders.Select(c => c.Build()).ToArray())
                 .NormalizeWhitespace();

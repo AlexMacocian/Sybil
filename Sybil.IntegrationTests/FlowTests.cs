@@ -8,7 +8,8 @@ namespace Sybil.IntegrationTests;
 public sealed class FlowTests
 {
     private const string ExpectedNamespace = 
-@"namespace TestNamespace
+@"[InternalsVisibleTo(""FlowTests"")]
+namespace TestNamespace
 {
     using System;
 
@@ -38,6 +39,8 @@ public sealed class FlowTests
     public void NewNamespace_GeneratesExpected()
     {
         var namespaceSyntax = SyntaxBuilder.CreateNamespace("TestNamespace")
+            .WithAttribute(SyntaxBuilder.CreateAttribute("InternalsVisibleTo")
+                .WithArgument("FlowTests"))
             .WithUsing("System")
             .WithClass(
                 SyntaxBuilder.CreateClass("TestClass")
