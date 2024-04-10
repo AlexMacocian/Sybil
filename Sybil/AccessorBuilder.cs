@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
+using System.Linq;
 
 namespace Sybil
 {
@@ -40,7 +41,7 @@ namespace Sybil
             _ = string.IsNullOrWhiteSpace(body) ? throw new ArgumentNullException(nameof(body)) : body;
 
             this.ArrowExpressionClauseSyntax = null;
-            this.BlockSyntax = SyntaxFactory.Block(SyntaxFactory.ParseStatement(body));
+            this.BlockSyntax = SyntaxFactory.Block(body.Split('\n', '\r').Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => SyntaxFactory.ParseStatement(s)));
 
             return this;
         }

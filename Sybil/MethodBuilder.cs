@@ -87,8 +87,13 @@ namespace Sybil
 
         public MethodBuilder WithBody(string body)
         {
+            if (string.IsNullOrWhiteSpace(body))
+            {
+                throw new ArgumentNullException(nameof(body));
+            }
+
             this.BlockBody = SyntaxFactory.Block(
-                SyntaxFactory.ParseStatement(body));
+                body.Split('\n', '\r').Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => SyntaxFactory.ParseStatement(s)));
             this.ArrowExpression = null;
 
             return this;

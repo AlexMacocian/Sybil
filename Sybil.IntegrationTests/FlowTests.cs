@@ -20,6 +20,7 @@ namespace TestNamespace
         TestClass(string fieldString) : base(fieldString)
         {
             this.fieldString = fieldString ?? throw new ArgumentNullException();
+            this.PropertyString = string.Empty;
         }
 
         [SomeAttribute2]
@@ -30,6 +31,7 @@ namespace TestNamespace
         [SomeAttribute4(0.5F)]
         public string GetFieldString()
         {
+            this.fieldString = 0;
             return this.fieldString;
         }
     }
@@ -61,7 +63,7 @@ namespace TestNamespace
                         SyntaxBuilder.CreateAttribute("SomeAttribute5")
                         .WithNullArgument())
                     .WithParameter("string", "fieldString")
-                    .WithBody("this.fieldString = fieldString ?? throw new ArgumentNullException();"))
+                    .WithBody("this.fieldString = fieldString ?? throw new ArgumentNullException();\rthis.PropertyString = string.Empty;"))
                 .WithField(
                     SyntaxBuilder.CreateField("string", "fieldString")
                     .WithAttribute(SyntaxBuilder.CreateAttribute("SomeAttribute2"))
@@ -81,7 +83,7 @@ namespace TestNamespace
                     .WithModifier("public")
                     .WithAttribute(SyntaxBuilder.CreateAttribute("SomeAttribute4")
                         .WithArgument(0.5f))
-                    .WithBody("return this.fieldString;")))
+                    .WithBody("this.fieldString = 0;\r\nreturn this.fieldString;")))
             .Build();
 
         var namespaceString = namespaceSyntax.ToFullString();
