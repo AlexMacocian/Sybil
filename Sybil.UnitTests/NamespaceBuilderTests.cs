@@ -15,6 +15,9 @@ public class NamespaceBuilderTests
 {
     using System;
 }";
+    private const string FileScopedNamespaceWithUsing =
+@"namespace Test;
+using System;";
 
     private readonly NamespaceBuilder builder;
 
@@ -65,17 +68,36 @@ public class NamespaceBuilderTests
     }
 
     [TestMethod]
-    public void Build_ReturnsNamespaceDeclarationSyntax()
+    public void Build_ReturnsFileScopedNamespaceDeclarationSyntax()
     {
         var syntax = this.builder.Build();
+
+        syntax.Should().NotBeNull().And.Subject.Should().BeOfType<FileScopedNamespaceDeclarationSyntax>();
+    }
+
+    [TestMethod]
+    public void Build_ReturnsNamespaceDeclarationSyntax()
+    {
+        var syntax = new NamespaceBuilder(Namespace, false).Build();
 
         syntax.Should().NotBeNull().And.Subject.Should().BeOfType<NamespaceDeclarationSyntax>();
     }
 
     [TestMethod]
-    public void WithUsing_ReturnsExpectedString()
+    public void FileScoped_WithUsing_ReturnsExpectedString()
     {
         var result = this.builder
+            .WithUsing(Using)
+            .Build()
+            .ToFullString();
+
+        result.Should().Be(FileScopedNamespaceWithUsing);
+    }
+
+    [TestMethod]
+    public void Enclosed_WithUsing_ReturnsExpectedString()
+    {
+        var result = new NamespaceBuilder(Namespace, false)
             .WithUsing(Using)
             .Build()
             .ToFullString();

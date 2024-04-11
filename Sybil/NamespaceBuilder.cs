@@ -7,18 +7,20 @@ using System.Linq;
 
 namespace Sybil
 {
-    public sealed class NamespaceBuilder : IBuilder<NamespaceDeclarationSyntax>
+    public sealed class NamespaceBuilder : IBuilder<BaseNamespaceDeclarationSyntax>
     {
         private readonly List<AttributeBuilder> attributeBuilders = new List<AttributeBuilder>();
         private readonly List<ClassBuilder> classBuilders = new List<ClassBuilder>();
-        private NamespaceDeclarationSyntax NamespaceDeclaration { get; set; }
+        private BaseNamespaceDeclarationSyntax NamespaceDeclaration { get; set; }
 
         internal NamespaceBuilder(
-            string @namespace)
+            string @namespace, bool fileScoped = true)
         {
             _ = string.IsNullOrWhiteSpace(@namespace) ? throw new ArgumentNullException(nameof(@namespace)) : @namespace;
             
-            this.NamespaceDeclaration = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(@namespace));
+            this.NamespaceDeclaration = fileScoped ? 
+                (BaseNamespaceDeclarationSyntax)SyntaxFactory.FileScopedNamespaceDeclaration(SyntaxFactory.ParseName(@namespace)) :
+                (BaseNamespaceDeclarationSyntax)SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(@namespace));
         }
 
         public NamespaceBuilder WithUsing(string usingName)
@@ -48,7 +50,7 @@ namespace Sybil
             return this;
         }
 
-        public NamespaceDeclarationSyntax Build()
+        public BaseNamespaceDeclarationSyntax Build()
         {
             if (this.attributeBuilders.Count > 0)
             {
