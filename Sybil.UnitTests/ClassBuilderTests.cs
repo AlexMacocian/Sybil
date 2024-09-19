@@ -10,6 +10,7 @@ public class ClassBuilderTests
 {
     private const string Name = "Test";
     private const string Base = "Base";
+    private const string IBase = "IBase";
     private const string PublicClass =
 @"public class Test
 {
@@ -20,6 +21,10 @@ public class ClassBuilderTests
 }";
     private const string ClassWithBase =
 @"class Test : Base
+{
+}";
+    private const string ClassWithInterface =
+@"class Test : IBase
 {
 }";
 
@@ -143,6 +148,25 @@ public class ClassBuilderTests
     }
 
     [TestMethod]
+    public void WithInterface_NullInterface_ThrowsArgumentNullException()
+    {
+        var action = () =>
+        {
+            this.builder.WithInterface(null);
+        };
+
+        action.Should().Throw<ArgumentNullException>();
+    }
+
+    [TestMethod]
+    public void WithInterface_InterfaceValid_ReturnsBuilder()
+    {
+        var returnedBuilder = this.builder.WithInterface(Base);
+
+        returnedBuilder.Should().NotBeNull().And.Subject.Should().BeOfType<ClassBuilder>();
+    }
+
+    [TestMethod]
     public void Build_ReturnsClassDeclarationSyntax()
     {
         var syntax = this.builder.Build();
@@ -175,5 +199,16 @@ public class ClassBuilderTests
             .ToFullString();
 
         result.Should().Be(ClassWithBase);
+    }
+
+    [TestMethod]
+    public void WithInterface_ReturnsExpectedString()
+    {
+        var result = this.builder
+            .WithInterface(IBase)
+            .Build()
+            .ToFullString();
+
+        result.Should().Be(ClassWithInterface);
     }
 }

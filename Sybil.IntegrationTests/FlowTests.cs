@@ -13,7 +13,7 @@ public sealed class FlowTests
 [InternalsVisibleTo(""FlowTests"")]
 namespace TestNamespace;
 [SomeAttribute(SomeIntProperty = 1, SomeStringProperty = ""Hello"", SomeEnumProperty = MyEnum.Value, SomeTypeProperty = typeof(String), SomeNullProperty = null)]
-public sealed class TestClass : BaseTestClass
+public sealed class TestClass : BaseTestClass, IInterface
 {
     [SomeAttribute5(null)]
     TestClass(string fieldString) : base(fieldString)
@@ -48,6 +48,7 @@ public sealed class TestClass : BaseTestClass
             .WithClass(
                 SyntaxBuilder.CreateClass("TestClass")
                 .WithBaseClass("BaseTestClass")
+                .WithInterface("IInterface")
                 .WithAttribute(SyntaxBuilder.CreateAttribute("SomeAttribute")
                     .WithArgument("SomeIntProperty", 1)
                     .WithArgument("SomeStringProperty", "Hello")

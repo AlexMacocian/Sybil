@@ -7,6 +7,7 @@ namespace Sybil
         public static NamespaceBuilder CreateNamespace(string @namespace) => new NamespaceBuilder(@namespace, false);
         public static NamespaceBuilder CreateFileScopedNamespace(string @namespace) => new NamespaceBuilder(@namespace, true);
         public static ClassBuilder CreateClass(string className) => new ClassBuilder(className);
+        public static InterfaceBuilder CreateInterface(string interfaceName) => new InterfaceBuilder(interfaceName);
         public static ConstructorBuilder CreateConstructor(string className) => new ConstructorBuilder(className);
         public static BaseConstructorBuilder CreateBaseConstructor() => new BaseConstructorBuilder();
         public static PropertyBuilder CreateProperty(string typeName, string propertyName) => new PropertyBuilder(typeName, propertyName);

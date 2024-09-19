@@ -35,6 +35,16 @@ namespace Sybil
             return this;
         }
 
+        public ClassBuilder WithInterface(string interfaceName)
+        {
+            _ = string.IsNullOrWhiteSpace(interfaceName) ? throw new ArgumentNullException(nameof(interfaceName)) : interfaceName;
+
+            this.ClassDeclaration = this.ClassDeclaration.AddBaseListTypes(
+                SyntaxFactory.SimpleBaseType(SyntaxFactory.ParseTypeName(interfaceName)));
+
+            return this;
+        }
+
         public ClassBuilder WithModifier(string modifier)
         {
             _ = string.IsNullOrWhiteSpace(modifier) ? throw new ArgumentNullException(nameof(modifier)) : modifier;
