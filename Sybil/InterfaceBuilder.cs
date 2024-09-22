@@ -13,6 +13,8 @@ namespace Sybil
 
         private readonly List<PropertyBuilder> Properties = new List<PropertyBuilder>();
         private readonly List<MethodBuilder> Methods = new List<MethodBuilder>();
+        private readonly List<TypeParameterBuilder> TypeParameters = new List<TypeParameterBuilder>();
+        private readonly List<TypeParameterConstraintBuilder> TypeParameterConstraints = new List<TypeParameterConstraintBuilder>();
 
         internal InterfaceBuilder(
             string interfaceName)
@@ -54,8 +56,31 @@ namespace Sybil
             return this;
         }
 
+        public InterfaceBuilder WithTypeParameter(TypeParameterBuilder typeParameterBuilder)
+        {
+            this.TypeParameters.Add(typeParameterBuilder ?? throw new ArgumentNullException(nameof(typeParameterBuilder)));
+
+            return this;
+        }
+
+        public InterfaceBuilder WithTypeParameterConstraint(TypeParameterConstraintBuilder typeConstraintBuilder)
+        {
+            this.TypeParameterConstraints.Add(typeConstraintBuilder ?? throw new ArgumentNullException(nameof(typeConstraintBuilder)));
+
+            return this;
+        }
+
         public InterfaceDeclarationSyntax Build()
         {
+            if (this.TypeParameters.Count > 0)
+            {
+                this.InterfaceDeclaration = this.InterfaceDeclaration.AddTypeParameterListParameters(this.TypeParameters.Select(t => t.Build()).ToArray());
+                if (this.TypeParameterConstraints.Count > 0)
+                {
+                    this.InterfaceDeclaration = this.InterfaceDeclaration.AddConstraintClauses(this.TypeParameterConstraints.Select(t => t.Build()).ToArray());
+                }
+            }
+
             return this.InterfaceDeclaration
                 .AddMembers(this.Properties.Select(p => p.Build()).ToArray())
                 .AddMembers(this.Methods.Select(p => p.Build()).ToArray())

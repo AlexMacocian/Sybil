@@ -14,6 +14,8 @@ namespace Sybil
         private BlockSyntax BlockBody { get; set; }
         private ArrowExpressionClauseSyntax ArrowExpression { get; set; }
         private MethodDeclarationSyntax MethodDeclarationSyntax { get; set; }
+        private readonly List<TypeParameterBuilder> TypeParameters = new List<TypeParameterBuilder>();
+        private readonly List<TypeParameterConstraintBuilder> TypeParameterConstraints = new List<TypeParameterConstraintBuilder>();
 
         internal MethodBuilder(
             string returnType, string name)
@@ -115,11 +117,34 @@ namespace Sybil
             return this;
         }
 
+        public MethodBuilder WithTypeParameter(TypeParameterBuilder typeParameterBuilder)
+        {
+            this.TypeParameters.Add(typeParameterBuilder ?? throw new ArgumentNullException(nameof(typeParameterBuilder)));
+
+            return this;
+        }
+
+        public MethodBuilder WithTypeParameterConstraint(TypeParameterConstraintBuilder typeConstraintBuilder)
+        {
+            this.TypeParameterConstraints.Add(typeConstraintBuilder ?? throw new ArgumentNullException(nameof(typeConstraintBuilder)));
+
+            return this;
+        }
+
         public MethodDeclarationSyntax Build()
         {
             if (this.attributeBuilders.Count > 0)
             {
                 this.MethodDeclarationSyntax = this.MethodDeclarationSyntax.AddAttributeLists(SyntaxFactory.AttributeList(SyntaxFactory.SeparatedList(this.attributeBuilders.Select(p => p.Build()).ToArray())));
+            }
+
+            if (this.TypeParameters.Count > 0)
+            {
+                this.MethodDeclarationSyntax = this.MethodDeclarationSyntax.AddTypeParameterListParameters(this.TypeParameters.Select(t => t.Build()).ToArray());
+                if (this.TypeParameterConstraints.Count > 0)
+                {
+                    this.MethodDeclarationSyntax = this.MethodDeclarationSyntax.AddConstraintClauses(this.TypeParameterConstraints.Select(t => t.Build()).ToArray());
+                }
             }
 
             if (this.BlockBody is null is false)
@@ -128,7 +153,7 @@ namespace Sybil
                     .WithBody(this.BlockBody)
                     .NormalizeWhitespace();
             }
-            
+
             return this.MethodDeclarationSyntax
                 .WithExpressionBody(this.ArrowExpression)
                 .NormalizeWhitespace();

@@ -16,6 +16,8 @@ namespace Sybil
         public static FieldBuilder CreateField(string fieldType, string fieldName) => new FieldBuilder(fieldType, fieldName);
         public static MethodBuilder CreateMethod(string returnType, string methodName) => new MethodBuilder(returnType, methodName);
         public static AttributeBuilder CreateAttribute(string attributeName) => new AttributeBuilder(attributeName);
+        public static TypeParameterBuilder CreateTypeParameter(string typeName) => new TypeParameterBuilder(typeName);
+        public static TypeParameterConstraintBuilder CreateTypeParameterConstraint(string typeName) => new TypeParameterConstraintBuilder(typeName);
         public static CompilationUnitBuilder CreateCompilationUnit() => new CompilationUnitBuilder();
     }
 }

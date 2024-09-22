@@ -13,7 +13,7 @@ public sealed class FlowTests
 [InternalsVisibleTo(""FlowTests"")]
 namespace TestNamespace;
 [SomeAttribute(SomeIntProperty = 1, SomeStringProperty = ""Hello"", SomeEnumProperty = MyEnum.Value, SomeTypeProperty = typeof(String), SomeNullProperty = null)]
-public sealed class TestClass : BaseTestClass, IInterface
+public sealed class TestClass<T> : BaseTestClass, IInterface where T : new(), class
 {
     [SomeAttribute5(null)]
     TestClass(string fieldString) : base(fieldString)
@@ -29,7 +29,7 @@ public sealed class TestClass : BaseTestClass, IInterface
     public string PropertyString { private set; get; }
 
     [SomeAttribute4(0.5F)]
-    public string GetFieldString()
+    public string GetFieldString<T>()
     {
         this.fieldString = 0;
         return this.fieldString;
@@ -49,6 +49,11 @@ public sealed class TestClass : BaseTestClass, IInterface
                 SyntaxBuilder.CreateClass("TestClass")
                 .WithBaseClass("BaseTestClass")
                 .WithInterface("IInterface")
+                .WithTypeParameter(SyntaxBuilder.CreateTypeParameter("T"))
+                .WithTypeParameterConstraint(
+                    SyntaxBuilder.CreateTypeParameterConstraint("T")
+                        .WithParameterlessConstructor()
+                        .WithClass())
                 .WithAttribute(SyntaxBuilder.CreateAttribute("SomeAttribute")
                     .WithArgument("SomeIntProperty", 1)
                     .WithArgument("SomeStringProperty", "Hello")
@@ -87,6 +92,7 @@ public sealed class TestClass : BaseTestClass, IInterface
                 .WithMethod(
                     SyntaxBuilder.CreateMethod("string", "GetFieldString")
                     .WithModifier("public")
+                    .WithTypeParameter(SyntaxBuilder.CreateTypeParameter("T"))
                     .WithAttribute(SyntaxBuilder.CreateAttribute("SomeAttribute4")
                         .WithArgument(0.5f))
                     .WithBody("this.fieldString = 0;\r\nreturn this.fieldString;"))))

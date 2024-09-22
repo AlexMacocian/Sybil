@@ -16,6 +16,8 @@ namespace Sybil
         private readonly List<FieldBuilder> Fields = new List<FieldBuilder>();
         private readonly List<PropertyBuilder> Properties = new List<PropertyBuilder>();
         private readonly List<MethodBuilder> Methods = new List<MethodBuilder>();
+        private readonly List<TypeParameterBuilder> TypeParameters = new List<TypeParameterBuilder>();
+        private readonly List<TypeParameterConstraintBuilder> TypeParameterConstraints = new List<TypeParameterConstraintBuilder>();
 
         internal ClassBuilder(
             string className)
@@ -98,11 +100,34 @@ namespace Sybil
             return this;
         }
 
+        public ClassBuilder WithTypeParameter(TypeParameterBuilder typeParameterBuilder)
+        {
+            this.TypeParameters.Add(typeParameterBuilder ?? throw new ArgumentNullException(nameof(typeParameterBuilder)));
+
+            return this;
+        }
+
+        public ClassBuilder WithTypeParameterConstraint(TypeParameterConstraintBuilder typeConstraintBuilder)
+        {
+            this.TypeParameterConstraints.Add(typeConstraintBuilder ?? throw new ArgumentNullException(nameof(typeConstraintBuilder)));
+
+            return this;
+        }
+
         public ClassDeclarationSyntax Build()
         {
             if (this.Attributes.Count > 0)
             {
                 this.ClassDeclaration = this.ClassDeclaration.AddAttributeLists(SyntaxFactory.AttributeList(SyntaxFactory.SeparatedList(this.Attributes.Select(p => p.Build()).ToArray())));
+            }
+
+            if (this.TypeParameters.Count > 0)
+            {
+                this.ClassDeclaration = this.ClassDeclaration.AddTypeParameterListParameters(this.TypeParameters.Select(t => t.Build()).ToArray());
+                if (this.TypeParameterConstraints.Count > 0)
+                {
+                    this.ClassDeclaration = this.ClassDeclaration.AddConstraintClauses(this.TypeParameterConstraints.Select(t => t.Build()).ToArray());
+                }
             }
 
             return this.ClassDeclaration
