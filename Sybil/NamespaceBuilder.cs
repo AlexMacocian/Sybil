@@ -11,6 +11,7 @@ namespace Sybil
     {
         private readonly List<AttributeBuilder> attributeBuilders = new List<AttributeBuilder>();
         private readonly List<ClassBuilder> classBuilders = new List<ClassBuilder>();
+        private readonly List<InterfaceBuilder> interfaceBuilders = new List<InterfaceBuilder>();
         private BaseNamespaceDeclarationSyntax NamespaceDeclaration { get; set; }
 
         internal NamespaceBuilder(
@@ -41,6 +42,15 @@ namespace Sybil
             return this;
         }
 
+        public NamespaceBuilder WithInterface(InterfaceBuilder interfaceBuilder)
+        {
+            _ = interfaceBuilder ?? throw new ArgumentNullException(nameof(interfaceBuilder));
+
+            this.interfaceBuilders.Add(interfaceBuilder);
+
+            return this;
+        }
+
         public NamespaceBuilder WithAttribute(AttributeBuilder attributeBuilder)
         {
             _ = attributeBuilder ?? throw new ArgumentNullException(nameof(attributeBuilder));
@@ -59,6 +69,7 @@ namespace Sybil
 
             return this.NamespaceDeclaration
                 .AddMembers(this.classBuilders.Select(c => c.Build()).ToArray())
+                .AddMembers(this.interfaceBuilders.Select(c => c.Build()).ToArray())
                 .NormalizeWhitespace();
         }
     }
