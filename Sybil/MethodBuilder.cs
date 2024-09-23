@@ -110,6 +110,13 @@ namespace Sybil
             return this;
         }
 
+        public MethodBuilder WithNoBody()
+        {
+            this.BlockBody = null;
+            this.ArrowExpression = null;
+            return this;
+        }
+
         public MethodBuilder WithAttribute(AttributeBuilder attributeBuilder)
         {
             this.attributeBuilders.Add(attributeBuilder ?? throw new ArgumentNullException(nameof(attributeBuilder)));
@@ -154,8 +161,14 @@ namespace Sybil
                     .NormalizeWhitespace();
             }
 
-            return this.MethodDeclarationSyntax
+            if (this.ArrowExpression is null is false)
+            {
+                return this.MethodDeclarationSyntax
                 .WithExpressionBody(this.ArrowExpression)
+                .NormalizeWhitespace();
+            }
+
+            return this.MethodDeclarationSyntax
                 .NormalizeWhitespace();
         }
     }

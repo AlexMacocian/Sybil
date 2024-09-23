@@ -17,6 +17,7 @@ public class MethodBuilderTests
     private const string ReturnType = "string";
     private const string Expression = "this.someString;";
     private const string Body = "this.someString = someString;";
+    private const string PublicDeclaration = "public string Test()";
     private const string PublicEmptyMethod = "public string Test() => throw new NotImplementedException() ;";
     private const string PublicSealedEmptyMethod = "public sealed string Test() => throw new NotImplementedException() ;";
     private const string EmptyMethodWithParameter = "string Test(string someString) => throw new NotImplementedException() ;";
@@ -274,6 +275,18 @@ public class MethodBuilderTests
             .ToFullString();
 
         result.Should().Be(MethodWithBody);
+    }
+
+    [TestMethod]
+    public void WithNoBody_ReturnsExpectedString()
+    {
+        var result = this.builder
+            .WithModifier(Public)
+            .WithNoBody()
+            .Build()
+            .ToFullString();
+
+        result.Should().Be(PublicDeclaration);
     }
 
     [TestMethod]
