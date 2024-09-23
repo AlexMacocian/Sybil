@@ -34,6 +34,8 @@ public sealed class TestClass<T> : BaseTestClass, IInterface where T : new(), cl
         this.fieldString = 0;
         return this.fieldString;
     }
+
+    public string GetSomething();
 }";
 
     [TestMethod]
@@ -95,7 +97,11 @@ public sealed class TestClass<T> : BaseTestClass, IInterface where T : new(), cl
                     .WithTypeParameter(SyntaxBuilder.CreateTypeParameter("T"))
                     .WithAttribute(SyntaxBuilder.CreateAttribute("SomeAttribute4")
                         .WithArgument(0.5f))
-                    .WithBody("this.fieldString = 0;\r\nreturn this.fieldString;"))))
+                    .WithBody("this.fieldString = 0;\r\nreturn this.fieldString;"))
+                .WithMethod(
+                    SyntaxBuilder.CreateMethod("string", "GetSomething")
+                    .WithModifier("public")
+                    .WithNoBody())))
             .Build();
 
         var compilationUnit = compilationUnitSyntax.ToFullString();

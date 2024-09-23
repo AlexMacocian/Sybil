@@ -169,6 +169,7 @@ namespace Sybil
             }
 
             return this.MethodDeclarationSyntax
+                .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken))
                 .NormalizeWhitespace();
         }
     }
