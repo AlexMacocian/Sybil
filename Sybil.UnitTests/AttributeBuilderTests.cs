@@ -10,6 +10,7 @@ public class AttributeBuilderTests
     private const string AttributeName = "SomeAttribute";
     private const string PropertyName = "SomeProperty";
     private const string StringValue = "SomeString";
+    private const string RawArgument = "MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization | MethodImplOptions.PreserveSig";
     private const int IntValue = 1;
     private const uint UintValue = 1U;
     private const long LongValue = 1L;
@@ -51,6 +52,7 @@ public class AttributeBuilderTests
     private const string AttributeWithBoolTrueValue = $"{AttributeName}(true)";
     private const string AttributeWithBoolFalseValue = $"{AttributeName}(false)";
     private const string AttributeWithNullValue = $"{AttributeName}(null)";
+    private const string AttributeWithRawArgument = $"{AttributeName}(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization | MethodImplOptions.PreserveSig)";
 
     private readonly AttributeBuilder attributeBuilder = SyntaxBuilder.CreateAttribute(AttributeName);
 
@@ -432,5 +434,13 @@ public class AttributeBuilderTests
         var result = attributeBuilder.WithNullArgument().Build().ToFullString();
 
         result.Should().Be(AttributeWithNullValue);
+    }
+
+    [TestMethod]
+    public void WithRawArgument_WithRawValue_ReturnsExpected()
+    {
+        var result = this.attributeBuilder.WithRawArgument(RawArgument).Build().ToFullString();
+
+        result.Should().Be(AttributeWithRawArgument);
     }
 }

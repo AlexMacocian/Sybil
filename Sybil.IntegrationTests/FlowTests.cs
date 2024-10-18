@@ -35,6 +35,7 @@ public sealed class TestClass<T> : BaseTestClass, IInterface where T : new(), cl
         return this.fieldString;
     }
 
+    [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization | MethodImplOptions.PreserveSig)]
     public string GetSomething();
 }";
 
@@ -101,6 +102,8 @@ public sealed class TestClass<T> : BaseTestClass, IInterface where T : new(), cl
                 .WithMethod(
                     SyntaxBuilder.CreateMethod("string", "GetSomething")
                     .WithModifier("public")
+                    .WithAttribute(SyntaxBuilder.CreateAttribute("MethodImpl")
+                        .WithRawArgument("MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization | MethodImplOptions.PreserveSig"))
                     .WithNoBody())))
             .Build();
 

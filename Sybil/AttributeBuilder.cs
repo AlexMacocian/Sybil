@@ -408,6 +408,15 @@ namespace Sybil
             return this;
         }
 
+        public AttributeBuilder WithRawArgument(string rawArgument)
+        {
+            this.AttributeSyntax = this.AttributeSyntax.AddArgumentListArguments(
+                SyntaxFactory.AttributeArgument(
+                    SyntaxFactory.ParseExpression(rawArgument)));
+
+            return this;
+        }
+
         public AttributeSyntax Build()
         {
             return this.AttributeSyntax
