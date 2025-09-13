@@ -17,7 +17,7 @@ jobs:
 
     env:
       Configuration: Release
-      Solution_Path: Sybil.sln
+      Solution_Path: Sybil.slnx
       UnitTest_Project_Path: Sybil.UnitTests\Sybil.UnitTests.csproj
       IntegrationTest_Project_Path: Sybil.IntegrationTests\Sybil.IntegrationTests.csproj
       Source_Project_Path: Sybil\Sybil.csproj

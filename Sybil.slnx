@@ -3,7 +3,6 @@
   <Folder Name="/.github/workflows/">
     <File Path=".github/workflows/cd.yaml" />
     <File Path=".github/workflows/ci.yaml" />
-    <File Path=".github/workflows/gitlab-mirror.yaml" />
   </Folder>
   <Project Path="Sybil.IntegrationTests/Sybil.IntegrationTests.csproj" />
   <Project Path="Sybil.UnitTests/Sybil.UnitTests.csproj" />
