@@ -65,8 +65,8 @@ namespace Sybil
             var parameter = SyntaxFactory.Parameter(
                 new SyntaxList<AttributeListSyntax>(),
                 new SyntaxTokenList(),
-                SyntaxFactory.IdentifierName(SyntaxFactory.Identifier(parameterType)),
-                SyntaxFactory.Identifier(parameterName),
+                SyntaxFactory.ParseTypeName(parameterType),
+                SyntaxFactory.ParseToken(parameterName),
                 equalsValueClauseSyntax);
             this.ConstructorDeclarationSyntax = this.ConstructorDeclarationSyntax.AddParameterListParameters(parameter);
 
@@ -77,8 +77,25 @@ namespace Sybil
         {
             _ = string.IsNullOrWhiteSpace(body) ? throw new ArgumentNullException(nameof(body)) : body;
 
-            this.ConstructorDeclarationSyntax = this.ConstructorDeclarationSyntax.WithBody(
-                SyntaxFactory.Block(body.Split('\n', '\r').Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => SyntaxFactory.ParseStatement(s))));
+            this.ConstructorDeclarationSyntax = this.ConstructorDeclarationSyntax.WithBody(BodyParser.ParseBlock(body));
+
+            return this;
+        }
+
+        public ConstructorBuilder WithStatements(IEnumerable<StatementSyntax> statements)
+        {
+            _ = statements ?? throw new ArgumentNullException(nameof(statements));
+
+            this.ConstructorDeclarationSyntax = this.ConstructorDeclarationSyntax.WithBody(SyntaxFactory.Block(statements));
+
+            return this;
+        }
+
+        public ConstructorBuilder WithParameter(ParameterBuilder parameterBuilder)
+        {
+            _ = parameterBuilder ?? throw new ArgumentNullException(nameof(parameterBuilder));
+
+            this.ConstructorDeclarationSyntax = this.ConstructorDeclarationSyntax.AddParameterListParameters(parameterBuilder.Build());
 
             return this;
         }

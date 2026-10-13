@@ -41,7 +41,7 @@ namespace Sybil
             _ = string.IsNullOrWhiteSpace(body) ? throw new ArgumentNullException(nameof(body)) : body;
 
             this.ArrowExpressionClauseSyntax = null;
-            this.BlockSyntax = SyntaxFactory.Block(body.Split('\n', '\r').Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => SyntaxFactory.ParseStatement(s)));
+            this.BlockSyntax = BodyParser.ParseBlock(body);
 
             return this;
         }

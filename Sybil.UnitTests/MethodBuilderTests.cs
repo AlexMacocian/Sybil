@@ -326,4 +326,83 @@ public class MethodBuilderTests
 
         result.Should().Be(PublicSealedMethodWithParameterAndExpression);
     }
+
+    [TestMethod]
+    public void WithBody_MultiLineStatements_ReturnsExpectedString()
+    {
+        var result = this.builder
+            .WithBody(@"var value = Foo(
+    1,
+    2);
+foreach (var item in items)
+{
+    Console.WriteLine(item);
+}
+return @""line1
+line2"";")
+            .Build()
+            .ToFullString();
+
+        result.Should().Be(
+@"string Test()
+{
+    var value = Foo(1, 2);
+    foreach (var item in items)
+    {
+        Console.WriteLine(item);
+    }
+
+    return @""line1
+line2"";
+}");
+    }
+
+    [TestMethod]
+    public void WithStatements_NullStatements_ThrowsArgumentNullException()
+    {
+        var action = () =>
+        {
+            this.builder.WithStatements(null);
+        };
+
+        action.Should().Throw<ArgumentNullException>();
+    }
+
+    [TestMethod]
+    public void WithStatements_ReturnsExpectedString()
+    {
+        var result = this.builder
+            .WithStatements(new[]
+            {
+                Microsoft.CodeAnalysis.CSharp.SyntaxFactory.ParseStatement("this.someString = someString;")
+            })
+            .Build()
+            .ToFullString();
+
+        result.Should().Be(MethodWithBody);
+    }
+
+    [TestMethod]
+    public void WithParameterBuilder_NullBuilder_ThrowsArgumentNullException()
+    {
+        var action = () =>
+        {
+            this.builder.WithParameter((ParameterBuilder)null);
+        };
+
+        action.Should().Throw<ArgumentNullException>();
+    }
+
+    [TestMethod]
+    public void WithParameterBuilder_ReturnsExpectedString()
+    {
+        var result = this.builder
+            .WithExpression(Expression)
+            .WithParameter(SyntaxBuilder.CreateParameter("CancellationToken", "cancellationToken")
+                .WithAttribute(SyntaxBuilder.CreateAttribute("EnumeratorCancellation")))
+            .Build()
+            .ToFullString();
+
+        result.Should().Be("string Test([EnumeratorCancellation] CancellationToken cancellationToken) => this.someString ;");
+    }
 }

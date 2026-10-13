@@ -12,6 +12,7 @@ namespace Sybil
         private readonly List<AttributeBuilder> attributeBuilders = new List<AttributeBuilder>();
         private readonly List<ClassBuilder> classBuilders = new List<ClassBuilder>();
         private readonly List<InterfaceBuilder> interfaceBuilders = new List<InterfaceBuilder>();
+        private readonly List<EnumBuilder> enumBuilders = new List<EnumBuilder>();
         private BaseNamespaceDeclarationSyntax NamespaceDeclaration { get; set; }
 
         internal NamespaceBuilder(
@@ -51,6 +52,15 @@ namespace Sybil
             return this;
         }
 
+        public NamespaceBuilder WithEnum(EnumBuilder enumBuilder)
+        {
+            _ = enumBuilder ?? throw new ArgumentNullException(nameof(enumBuilder));
+
+            this.enumBuilders.Add(enumBuilder);
+
+            return this;
+        }
+
         public NamespaceBuilder WithAttribute(AttributeBuilder attributeBuilder)
         {
             _ = attributeBuilder ?? throw new ArgumentNullException(nameof(attributeBuilder));
@@ -70,6 +80,7 @@ namespace Sybil
             return this.NamespaceDeclaration
                 .AddMembers(this.classBuilders.Select(c => c.Build()).ToArray())
                 .AddMembers(this.interfaceBuilders.Select(c => c.Build()).ToArray())
+                .AddMembers(this.enumBuilders.Select(c => c.Build()).ToArray())
                 .NormalizeWhitespace();
         }
     }

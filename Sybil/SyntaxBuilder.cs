@@ -19,5 +19,7 @@ namespace Sybil
         public static TypeParameterBuilder CreateTypeParameter(string typeName) => new TypeParameterBuilder(typeName);
         public static TypeParameterConstraintBuilder CreateTypeParameterConstraint(string typeName) => new TypeParameterConstraintBuilder(typeName);
         public static CompilationUnitBuilder CreateCompilationUnit() => new CompilationUnitBuilder();
+        public static EnumBuilder CreateEnum(string enumName) => new EnumBuilder(enumName);
+        public static ParameterBuilder CreateParameter(string parameterType, string parameterName) => new ParameterBuilder(parameterType, parameterName);
     }
 }

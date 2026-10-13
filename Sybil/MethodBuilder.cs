@@ -70,6 +70,15 @@ namespace Sybil
             return this;
         }
 
+        public MethodBuilder WithParameter(ParameterBuilder parameterBuilder)
+        {
+            _ = parameterBuilder ?? throw new ArgumentNullException(nameof(parameterBuilder));
+
+            this.MethodDeclarationSyntax = this.MethodDeclarationSyntax.AddParameterListParameters(parameterBuilder.Build());
+
+            return this;
+        }
+
         public MethodBuilder WithThisParameter(string parameterType, string parameterName)
         {
             _ = string.IsNullOrWhiteSpace(parameterName) ? throw new ArgumentNullException(nameof(parameterName)) : parameterName;
@@ -94,8 +103,17 @@ namespace Sybil
                 throw new ArgumentNullException(nameof(body));
             }
 
-            this.BlockBody = SyntaxFactory.Block(
-                body.Split('\n', '\r').Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => SyntaxFactory.ParseStatement(s)));
+            this.BlockBody = BodyParser.ParseBlock(body);
+            this.ArrowExpression = null;
+
+            return this;
+        }
+
+        public MethodBuilder WithStatements(IEnumerable<StatementSyntax> statements)
+        {
+            _ = statements ?? throw new ArgumentNullException(nameof(statements));
+
+            this.BlockBody = SyntaxFactory.Block(statements);
             this.ArrowExpression = null;
 
             return this;

@@ -4,7 +4,7 @@ C# Syntax builders following builder pattern
 
 ## Usage
 
-Sybil supports building of namespaces with classes, constructors, parameters, properties, fields and methods.
+Sybil supports building of compilation units, namespaces, classes, interfaces, enums, constructors, parameters, properties, fields and methods.
 Example of creating a namespace with one class with one constructor and base class, multiple fields, properties and methods:
 ```C#
 var namespaceSyntax = SyntaxBuilder.CreateNamespace("TestNamespace")
@@ -85,3 +85,25 @@ namespace TestNamespace
     }
 }
 ```
+
+## Builders
+
+| Builder | Created with | Notes |
+|---|---|---|
+| `CompilationUnitBuilder` | `SyntaxBuilder.CreateCompilationUnit()` | `WithHeaderComment` and `WithNullableContext` emit a leading comment and `#nullable` directive |
+| `NamespaceBuilder` | `CreateNamespace` / `CreateFileScopedNamespace` | Holds classes, interfaces and enums |
+| `ClassBuilder` | `CreateClass` | |
+| `InterfaceBuilder` | `CreateInterface` | |
+| `EnumBuilder` | `CreateEnum` | Members with optional values, base type, attributes |
+| `ConstructorBuilder` | `CreateConstructor` | |
+| `MethodBuilder` | `CreateMethod` | |
+| `ParameterBuilder` | `CreateParameter` | Attributes, modifiers (`params`, `this`, ...) and default values; pass to `WithParameter(ParameterBuilder)` |
+| `PropertyBuilder` / `AccessorBuilder` | `CreateProperty`, `CreateGetter`, `CreateSetter` | |
+| `FieldBuilder` | `CreateField` | |
+| `AttributeBuilder` | `CreateAttribute` | |
+
+## Bodies
+
+`WithBody(string)` parses the whole text as one block, so statements may span multiple lines (object initializers, loops, multi-line verbatim strings).
+`WithStatements(IEnumerable<StatementSyntax>)` accepts statements built with Roslyn's `SyntaxFactory`.
+Output is formatted with Roslyn's `NormalizeWhitespace`.
