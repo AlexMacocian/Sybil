@@ -219,4 +219,32 @@ public class ConstructorBuilderTests
 
         result.Should().Be(ConstructorWithModifiersBodyAndParameter);
     }
+
+    [TestMethod]
+    public void WithParameter_ParamsModifierInType_ReturnsExpectedString()
+    {
+        var result = this.builder
+            .WithParameter("params string[]", "values")
+            .Build()
+            .ToFullString();
+
+        result.Should().Be(
+@"Test(params string[] values)
+{
+}");
+    }
+
+    [TestMethod]
+    public void WithParameter_NullableGenericType_ReturnsExpectedString()
+    {
+        var result = this.builder
+            .WithParameter("List<string?>", "values")
+            .Build()
+            .ToFullString();
+
+        result.Should().Be(
+@"Test(List<string?> values)
+{
+}");
+    }
 }

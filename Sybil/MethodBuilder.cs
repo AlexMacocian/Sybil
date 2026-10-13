@@ -58,12 +58,7 @@ namespace Sybil
                     SyntaxFactory.ParseExpression(defaultValue));
             }
 
-            var parameter = SyntaxFactory.Parameter(
-                SyntaxFactory.List<AttributeListSyntax>(),
-                SyntaxFactory.TokenList(),
-                type: SyntaxFactory.ParseTypeName(parameterType),
-                identifier: SyntaxFactory.ParseToken(parameterName),
-                @default: equalsValueClauseSyntax);
+            var parameter = ParameterFactory.Create(parameterType, parameterName, equalsValueClauseSyntax);
 
             this.MethodDeclarationSyntax = this.MethodDeclarationSyntax.AddParameterListParameters(parameter);
 

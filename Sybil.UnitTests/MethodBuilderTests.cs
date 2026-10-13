@@ -405,4 +405,15 @@ line2"";
 
         result.Should().Be("string Test([EnumeratorCancellation] CancellationToken cancellationToken) => this.someString ;");
     }
+
+    [TestMethod]
+    public void WithParameter_ThisModifierInType_ReturnsExpectedString()
+    {
+        var result = this.builder
+            .WithParameter("this string", ParameterName)
+            .Build()
+            .ToFullString();
+
+        result.Should().Be(EmptyMethodWithThisParameter);
+    }
 }
