@@ -387,7 +387,7 @@ line2"";
     {
         var action = () =>
         {
-            this.builder.WithParameter((ParameterBuilder)null);
+            this.builder.WithParameter((ParameterBuilder)null!);
         };
 
         action.Should().Throw<ArgumentNullException>();
