@@ -1,7 +1,7 @@
 <Solution>
   <Folder Name="/.github/" />
   <Folder Name="/.github/workflows/">
-    <File Path=".github/workflows/cd.yaml" />
+    <File Path=".github/workflows/cd.yml" />
     <File Path=".github/workflows/ci.yaml" />
   </Folder>
   <Project Path="Sybil.IntegrationTests/Sybil.IntegrationTests.csproj" />

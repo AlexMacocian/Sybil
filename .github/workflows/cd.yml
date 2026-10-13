@@ -4,11 +4,14 @@ on:
   push:
     branches:
       - master
-      
+
 jobs:
 
   build:
-    environment: Default
+    environment: production
+    permissions:
+      contents: read
+      id-token: write  # GitHub OIDC token for nuget.org trusted publishing
     strategy:
       matrix:
         targetplatform: [x64]
@@ -21,32 +24,43 @@ jobs:
       UnitTest_Project_Path: Sybil.UnitTests\Sybil.UnitTests.csproj
       IntegrationTest_Project_Path: Sybil.IntegrationTests\Sybil.IntegrationTests.csproj
       Source_Project_Path: Sybil\Sybil.csproj
-      Actions_Allow_Unsecure_Commands: true
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
     - name: Install .NET Core
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.0.x'
 
     - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v1.0.1
+      uses: microsoft/setup-msbuild@v2
 
     - name: Restore project
       run: msbuild $env:Solution_Path /t:Restore /p:Configuration=$env:Configuration /p:RuntimeIdentifier=$env:RuntimeIdentifier
       env:
         RuntimeIdentifier: win-${{ matrix.targetplatform }}
 
+    - name: Execute Unit Tests
+      run: dotnet test $env:UnitTest_Project_Path
+
+    - name: Execute Integration Tests
+      run: dotnet test $env:IntegrationTest_Project_Path
+
     - name: Build Sybil project
       run: dotnet build Sybil -c $env:Configuration
 
     - name: Package
-      run: dotnet pack -c Release -o . $env:Source_Project_Path
+      run: dotnet pack -c $env:Configuration --no-build -o . $env:Source_Project_Path
+
+    - name: NuGet login (OIDC trusted publishing)
+      uses: NuGet/login@v1
+      id: login
+      with:
+        user: AlexandruMacocian
 
     - name: Publish
-      run: dotnet nuget push *.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+      run: dotnet nuget push *.nupkg --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
