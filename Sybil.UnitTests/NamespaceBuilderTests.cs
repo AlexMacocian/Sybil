@@ -68,6 +68,28 @@ using System;";
     }
 
     [TestMethod]
+    public void WithStruct_NullStructBuilder_ThrowsArgumentNullException()
+    {
+        var action = () =>
+        {
+            this.builder.WithStruct(null);
+        };
+
+        action.Should().Throw<ArgumentNullException>();
+    }
+
+    [TestMethod]
+    public void WithStruct_ReturnsExpectedString()
+    {
+        var result = this.builder
+            .WithStruct(SyntaxBuilder.CreateStruct("Test").WithModifier("public"))
+            .Build()
+            .ToFullString();
+
+        result.Should().Contain("public struct Test");
+    }
+
+    [TestMethod]
     public void Build_ReturnsFileScopedNamespaceDeclarationSyntax()
     {
         var syntax = this.builder.Build();

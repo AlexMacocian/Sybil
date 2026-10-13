@@ -62,6 +62,7 @@ namespace Sybil
             var compilationUnitSyntax = this.CompilationUnitSyntax
                 .AddMembers(this.namespaceBuilders.Select(n => n.Build()).ToArray())
                 .NormalizeWhitespace();
+            compilationUnitSyntax = Formatting.SeparateFileScopedNamespaces(compilationUnitSyntax);
 
             var headerTrivia = new List<SyntaxTrivia>();
             foreach (var comment in this.headerComments)

@@ -11,6 +11,7 @@ namespace Sybil
     {
         private readonly List<AttributeBuilder> attributeBuilders = new List<AttributeBuilder>();
         private readonly List<ClassBuilder> classBuilders = new List<ClassBuilder>();
+        private readonly List<StructBuilder> structBuilders = new List<StructBuilder>();
         private readonly List<InterfaceBuilder> interfaceBuilders = new List<InterfaceBuilder>();
         private readonly List<EnumBuilder> enumBuilders = new List<EnumBuilder>();
         private BaseNamespaceDeclarationSyntax NamespaceDeclaration { get; set; }
@@ -39,6 +40,15 @@ namespace Sybil
             _ = classBuilder ?? throw new ArgumentNullException(nameof(classBuilder));
 
             this.classBuilders.Add(classBuilder);
+
+            return this;
+        }
+
+        public NamespaceBuilder WithStruct(StructBuilder structBuilder)
+        {
+            _ = structBuilder ?? throw new ArgumentNullException(nameof(structBuilder));
+
+            this.structBuilders.Add(structBuilder);
 
             return this;
         }
@@ -77,11 +87,12 @@ namespace Sybil
                 this.NamespaceDeclaration = this.NamespaceDeclaration.AddAttributeLists(SyntaxFactory.AttributeList(SyntaxFactory.SeparatedList(this.attributeBuilders.Select(p => p.Build()).ToArray())));
             }
 
-            return this.NamespaceDeclaration
+            return Formatting.SeparateFileScopedNamespaces(this.NamespaceDeclaration
                 .AddMembers(this.classBuilders.Select(c => c.Build()).ToArray())
+                .AddMembers(this.structBuilders.Select(c => c.Build()).ToArray())
                 .AddMembers(this.interfaceBuilders.Select(c => c.Build()).ToArray())
                 .AddMembers(this.enumBuilders.Select(c => c.Build()).ToArray())
-                .NormalizeWhitespace();
+                .NormalizeWhitespace());
         }
     }
 }

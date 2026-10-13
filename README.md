@@ -91,8 +91,9 @@ namespace TestNamespace
 | Builder | Created with | Notes |
 |---|---|---|
 | `CompilationUnitBuilder` | `SyntaxBuilder.CreateCompilationUnit()` | `WithHeaderComment` and `WithNullableContext` emit a leading comment and `#nullable` directive |
-| `NamespaceBuilder` | `CreateNamespace` / `CreateFileScopedNamespace` | Holds classes, interfaces and enums |
+| `NamespaceBuilder` | `CreateNamespace` / `CreateFileScopedNamespace` | Holds classes, structs, interfaces and enums; file scoped namespaces are followed by a blank line |
 | `ClassBuilder` | `CreateClass` | |
+| `StructBuilder` | `CreateStruct` | Like `ClassBuilder` without a base class; modifiers such as `readonly`, `ref`, `partial` |
 | `InterfaceBuilder` | `CreateInterface` | |
 | `EnumBuilder` | `CreateEnum` | Members with optional values, base type, attributes |
 | `ConstructorBuilder` | `CreateConstructor` | |
@@ -106,4 +107,4 @@ namespace TestNamespace
 
 `WithBody(string)` parses the whole text as one block, so statements may span multiple lines (object initializers, loops, multi-line verbatim strings).
 `WithStatements(IEnumerable<StatementSyntax>)` accepts statements built with Roslyn's `SyntaxFactory`.
-Output is formatted with Roslyn's `NormalizeWhitespace`.
+Output is formatted with Roslyn's `NormalizeWhitespace`. Empty bodies: `WithStatements([])` (`WithBody` rejects empty text).

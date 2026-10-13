@@ -12,6 +12,7 @@ public sealed class FlowTests
 
 [InternalsVisibleTo(""FlowTests"")]
 namespace TestNamespace;
+
 [SomeAttribute(SomeIntProperty = 1, SomeStringProperty = ""Hello"", SomeEnumProperty = MyEnum.Value, SomeTypeProperty = typeof(String), SomeNullProperty = null)]
 public sealed class TestClass<T> : BaseTestClass, IInterface where T : new(), class
 {
