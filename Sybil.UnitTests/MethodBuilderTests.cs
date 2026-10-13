@@ -18,13 +18,13 @@ public class MethodBuilderTests
     private const string Expression = "this.someString;";
     private const string Body = "this.someString = someString;";
     private const string PublicDeclaration = "public string Test();";
-    private const string PublicEmptyMethod = "public string Test() => throw new NotImplementedException() ;";
-    private const string PublicSealedEmptyMethod = "public sealed string Test() => throw new NotImplementedException() ;";
-    private const string EmptyMethodWithParameter = "string Test(string someString) => throw new NotImplementedException() ;";
-    private const string EmptyMethodWithThisParameter = "string Test(this string someString) => throw new NotImplementedException() ;";
-    private const string EmptyMethodWithParameterWithDefault = "string Test(string someString = null) => throw new NotImplementedException() ;";
-    private const string MethodWithArrowExpression = "string Test() => this.someString ;";
-    private const string PublicSealedMethodWithParameterAndExpression = "public sealed string Test(string someString = null) => this.someString ;";
+    private const string PublicEmptyMethod = "public string Test() => throw new NotImplementedException();";
+    private const string PublicSealedEmptyMethod = "public sealed string Test() => throw new NotImplementedException();";
+    private const string EmptyMethodWithParameter = "string Test(string someString) => throw new NotImplementedException();";
+    private const string EmptyMethodWithThisParameter = "string Test(this string someString) => throw new NotImplementedException();";
+    private const string EmptyMethodWithParameterWithDefault = "string Test(string someString = null) => throw new NotImplementedException();";
+    private const string MethodWithArrowExpression = "string Test() => this.someString;";
+    private const string PublicSealedMethodWithParameterAndExpression = "public sealed string Test(string someString = null) => this.someString;";
     private const string MethodWithBody = 
 @"string Test()
 {
@@ -403,7 +403,7 @@ line2"";
             .Build()
             .ToFullString();
 
-        result.Should().Be("string Test([EnumeratorCancellation] CancellationToken cancellationToken) => this.someString ;");
+        result.Should().Be("string Test([EnumeratorCancellation] CancellationToken cancellationToken) => this.someString;");
     }
 
     [TestMethod]

@@ -50,7 +50,7 @@ namespace Sybil
             _ = string.IsNullOrWhiteSpace(expression) ? throw new ArgumentNullException(nameof(expression)) : expression;
 
             this.BlockSyntax = null;
-            this.ArrowExpressionClauseSyntax = SyntaxFactory.ArrowExpressionClause(SyntaxFactory.ParseExpression(expression));
+            this.ArrowExpressionClauseSyntax = BodyParser.ParseArrowExpression(expression);
 
             return this;
         }
@@ -69,7 +69,7 @@ namespace Sybil
                 body: this.BlockSyntax,
                 expressionBody: this.ArrowExpressionClauseSyntax);
 
-            if (this.BlockSyntax is null && this.ArrowExpressionClauseSyntax is null)
+            if (this.BlockSyntax is null)
             {
                 accessorDeclaration = accessorDeclaration.WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
             }

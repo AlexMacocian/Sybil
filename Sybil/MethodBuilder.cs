@@ -24,8 +24,7 @@ namespace Sybil
             _ = string.IsNullOrWhiteSpace(name) ? throw new ArgumentNullException(nameof(name)) : name;
 
             this.MethodDeclarationSyntax = SyntaxFactory.MethodDeclaration(SyntaxFactory.ParseTypeName(returnType), SyntaxFactory.ParseToken(name));
-            this.ArrowExpression = SyntaxFactory.ArrowExpressionClause(
-                SyntaxFactory.ParseExpression("throw new NotImplementedException();"));
+            this.ArrowExpression = BodyParser.ParseArrowExpression("throw new NotImplementedException()");
         }
 
         public MethodBuilder WithModifier(string modifier)
@@ -116,8 +115,9 @@ namespace Sybil
 
         public MethodBuilder WithExpression(string expression)
         {
-            this.ArrowExpression = SyntaxFactory.ArrowExpressionClause(
-                SyntaxFactory.ParseExpression(expression));
+            _ = expression ?? throw new ArgumentNullException(nameof(expression));
+
+            this.ArrowExpression = BodyParser.ParseArrowExpression(expression);
             this.BlockBody = null;
 
             return this;
@@ -178,6 +178,7 @@ namespace Sybil
             {
                 return this.MethodDeclarationSyntax
                 .WithExpressionBody(this.ArrowExpression)
+                .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken))
                 .NormalizeWhitespace();
             }
 

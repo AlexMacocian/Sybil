@@ -11,7 +11,7 @@ public class AccessorBuilderTests
     private const string PublicGet = "public get;";
     private const string PublicStaticGet = "public static get;";
     private const string Set = "set;";
-    private const string GetExpressionField = "get => this.field ;";
+    private const string GetExpressionField = "get => this.field;";
     private const string GetBodyField =
 @"get
 {
